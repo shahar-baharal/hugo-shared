@@ -1,0 +1,4 @@
+# Overrides HugoBlox's data/page_sharer.yaml (docs.hugoblox.com/reference/page-sharer/):
+# no social share row on any page. A site that wants it back adds its own
+# data/page_sharer.yaml, which wins over this one.
+links: []

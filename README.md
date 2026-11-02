@@ -20,6 +20,8 @@ that one file.
   (vendor's file plus this, plus `root_absolute` entries such as the `/admin`
   Edit link kept at the site root on `/he/`, `/fr/` pages). Congo draws
   `params.icon` itself, from `assets/icons/qr-code.svg` here.
+- **No social share row** (HugoBlox): `data/page_sharer.yaml` empties vendor's
+  share links on every page. A site that wants them keeps its own copy.
 - `hugo.toml` — the minimum Hugo version (0.141, for `images.QR`).
 
 ## Using it in a site

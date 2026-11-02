@@ -1,0 +1,22 @@
+{{/*
+  QR code of this site's homepage (or `text`), generated at build time by
+  images.QR, with the URL as caption and a download link. Same arguments as
+  Hugo's built-in `qr` shortcode (text, level, scale, targetDir), which it
+  leaves untouched. Labels: i18n/*.yaml (qr_alt, qr_download).
+  No utility classes: themes ship different CSS (Congo's is precompiled), so
+  layout is inline and the links get each theme's own link style.
+
+  {{< site-qr >}}
+  {{< site-qr text="https://example.com/" scale=6 />}}
+*/}}
+{{- $text := or (.Get "text") site.Home.Permalink -}}
+{{- $opts := dict "level" (or (.Get "level") "medium") "scale" (or (.Get "scale") 10) "targetDir" (or (.Get "targetDir") "qr") -}}
+{{- with images.QR $text $opts -}}
+<figure style="text-align: center">
+  <img src="{{ .RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}"
+       style="display: block; margin: 0 auto; width: 16rem; max-width: 100%; height: auto"
+       alt="{{ i18n "qr_alt" }} {{ $text }}">
+  <figcaption><a href="{{ $text }}">{{ $text }}</a></figcaption>
+  <p><a href="{{ .RelPermalink }}" download="{{ (urls.Parse site.Home.Permalink).Host }}-qr.png">{{ i18n "qr_download" }}</a></p>
+</figure>
+{{- end -}}

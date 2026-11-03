@@ -20,6 +20,11 @@ that one file.
   (vendor's file plus this, plus `root_absolute` entries such as the `/admin`
   Edit link kept at the site root on `/he/`, `/fr/` pages). Congo draws
   `params.icon` itself, from `assets/icons/qr-code.svg` here.
+- **Header height** (HugoBlox) — `layouts/_partials/set-header-height.html`
+  sets `--header-h` to the sticky header's height, so a hero can fill the
+  screen below it. Each HugoBlox site's `baseof.html` calls
+  `{{ partial "set-header-height" . }}` before `</body>`: a `hooks/body-end/`
+  file in a module is never loaded (HugoBlox reads that folder from the site only).
 - `hugo.toml` — the minimum Hugo version (0.141, for `images.QR`).
 
 ## Using it in a site
@@ -70,10 +75,11 @@ HugoBlox sites only.
 1. **Cloudflare Web Analytics**: 6 copies that differ only by token (5 HugoBlox
    `hooks/body-end/cloudflare-web-analytics.html`, shahar-best's
    `extend-footer.html`). One partial reading a `params` token, production
-   builds only.
+   builds only, called from `baseof.html` like the header height (a module's
+   `hooks/` file isn't loaded).
 2. **Identical HugoBlox fixes**, same bytes in 5 sites: `site_footer.html`,
    `functions/get_logo_url.html`, `functions/get_featured_image.html`,
-   `jsonld/business.html`, `hooks/body-end/set-header-height.html`. Rationale:
+   `jsonld/business.html`. Rationale:
    `menashe-forge/docs/themes/hugoblox/OVERRIDES.md`.
 3. **Sveltia CMS loader** (`static/admin/index.html`): copies pinned to
    different versions (0.219.0, 0.256.1). One pin here; each site keeps its

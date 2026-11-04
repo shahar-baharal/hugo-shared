@@ -1,0 +1,13 @@
+{{/*
+  Cloudflare Web Analytics beacon, for the site whose token is in
+  params.cloudflare_analytics_token (dashboard → Web analytics → the site's
+  domain). Cloudflare can't auto-inject it into Worker-served pages, so it's
+  added here. The token is public. Production builds only, so local dev isn't
+  counted; no token, no beacon.
+
+  Called before </body>: HugoBlox sites from layouts/baseof.html (a module's
+  hooks/body-end/ file is never loaded), Congo from extend-footer.html.
+*/}}
+{{ with site.Params.cloudflare_analytics_token }}{{ if hugo.IsProduction }}
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "{{ . }}"}'></script>
+{{ end }}{{ end }}

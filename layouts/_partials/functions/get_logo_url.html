@@ -1,0 +1,24 @@
+{{/*
+  Shared HugoBlox override — rationale: menashe-forge/docs/themes/hugoblox/OVERRIDES.md
+  Vendor called `.Permalink` directly on the dict returned by
+  functions/get_logo and functions/get_site_icon ({resource, type, is_svg}),
+  which has no Permalink key, so it silently resolved to nil everywhere this
+  partial is used (JSON-LD business/article "logo"). Fixed to go through
+  `.resource.Permalink`, matching the pattern used elsewhere (e.g.
+  site_head.html, navbar.html).
+*/}}
+{{/* Function to get logo URL for JSONLD. */}}
+{{/* Inputs: page context */}}
+{{/* Output: logo URL (URL) */}}
+
+{{ $logo_url := "" }}
+{{ if resources.Get "media/logo.png" | or (resources.Get "media/logo.svg") }}
+  {{/* !CACHED! Can safely cache this site logo variant */}}
+  {{ $logo := partialCached "functions/get_logo" (dict "constraint" "fit" "size" 192) }}
+  {{ with $logo.resource }}{{ $logo_url = .Permalink }}{{ end }}
+{{ else }}
+  {{ $icon := partial "functions/get_site_icon" 192 }}
+  {{ with $icon.resource }}{{ $logo_url = .Permalink }}{{ end }}
+{{ end }}
+
+{{ return $logo_url }}

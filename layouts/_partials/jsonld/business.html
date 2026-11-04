@@ -1,0 +1,41 @@
+{{/*
+  Shared HugoBlox override — rationale: menashe-forge/docs/themes/hugoblox/OVERRIDES.md
+  Vendor piped identity.type through `humanize`, which inserts a space before
+  internal capitals and lowercases them (e.g. "TravelAgency" -> "Travel
+  agency"), producing an invalid, non-schema.org @type with no upstream
+  lookup table to fix it. This override drops `| humanize` so @type passes
+  through unchanged — `hugoblox.identity.type` in params.toml must already be
+  an exact schema.org type token (e.g. "TravelAgency", "LocalBusiness",
+  "Organization").
+*/}}
+{{- $sharing_image := resources.GetMatch (path.Join "media" "sharing.*") -}}
+{{- $branding := partialCached "functions/get_branding" . "branding" -}}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": {{site.Params.hugoblox.identity.type | default "Organization"}},
+  "@id": {{site.BaseURL}},
+  "name": {{$branding.organization}},
+  "logo": {{ partial "functions/get_logo_url" . }},
+  {{with $sharing_image}}"image": {{.Permalink}},{{end}}
+  {{ if (eq site.Params.hugoblox.identity.type "local_business") | and site.Params.hugoblox.seo.location.coordinates }}
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": {{site.Params.hugoblox.seo.location.coordinates.latitude}},
+    "longitude": {{site.Params.hugoblox.seo.location.coordinates.longitude}}
+  },
+  {{end}}
+  {{ with site.Params.hugoblox.seo.location.address }}
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": {{ .street | default "" }},
+    "addressLocality": {{ .city | default "" }},
+    "addressRegion": {{ .region | default "" }},
+    "postalCode": {{ .postal_code | default "" }},
+    "addressCountry": {{ .country | default "" }}
+  },
+  {{end}}
+  {{ with site.Params.hugoblox.seo.location.phone }}"telephone": {{.}},{{end}}
+  "url": {{site.BaseURL}}
+}
+</script>

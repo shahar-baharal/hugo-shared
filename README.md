@@ -30,6 +30,21 @@ that one file.
   each language (`theme_toggle` in `i18n/`). Each HugoBlox site's
   `components/headers/navbar.html` override calls
   `{{ partial "components/theme-toggle.html" . }}` in place of the vendor button.
+- **HugoBlox fixes** — `layouts/_partials/site_footer.html`,
+  `functions/get_logo_url.html`, `functions/get_featured_image.html`,
+  `jsonld/business.html`, `components/language-chooser.html`: vendor files
+  with a fix, used as-is. Rationale for each:
+  `menashe-forge/docs/themes/hugoblox/OVERRIDES.md`. A site that needs a
+  variation keeps its own copy (atlas: `site_footer.html`).
+- **Cloudflare Web Analytics** — `layouts/_partials/cloudflare-web-analytics.html`
+  adds the beacon on production builds when the site sets
+  `params.cloudflare_analytics_token`. Called before `</body>`: from each
+  HugoBlox site's `baseof.html` (like the header height), from shahar-best's
+  `extend-footer.html`.
+- **Sveltia CMS loader** — `static/admin/index.html`, one version pin for
+  every site's `/admin/`. Each site keeps its own `static/admin/config.yml`.
+  A site without a CMS lists hugo-shared's mounts without `static` (baharal's
+  `hugo.toml`).
 - `hugo.toml` — the minimum Hugo version (0.141, for `images.QR`).
 
 ## Using it in a site
@@ -77,24 +92,12 @@ file that would break the Congo site (e.g. `baseof.html`) needs its own
 module first: a `hugoblox/` folder with its own `go.mod`, imported by the
 HugoBlox sites only.
 
-1. **Cloudflare Web Analytics**: 6 copies that differ only by token (5 HugoBlox
-   `hooks/body-end/cloudflare-web-analytics.html`, shahar-best's
-   `extend-footer.html`). One partial reading a `params` token, production
-   builds only, called from `baseof.html` like the header height (a module's
-   `hooks/` file isn't loaded).
-2. **Identical HugoBlox fixes**, same bytes in 5 sites: `site_footer.html`,
-   `functions/get_logo_url.html`, `functions/get_featured_image.html`,
-   `jsonld/business.html`. Rationale:
-   `menashe-forge/docs/themes/hugoblox/OVERRIDES.md`.
-3. **Sveltia CMS loader** (`static/admin/index.html`): copies pinned to
-   different versions (0.219.0, 0.256.1). One pin here; each site keeps its
-   own `config.yml`.
-4. **Near-identical HugoBlox overrides**: `baseof.html`,
+1. **Near-identical HugoBlox overrides**: `baseof.html`,
    `components/headers/navbar.html`, `views/card.html`, hero `component.jsx`,
    `hbx/blocks/contact-info/block.html`. Same skip-link, keyboard, RTL and
    i18n fixes with per-site twists (eztechrepair's dark logo, mordecai's
    `tel:` CTA): share the common file, keep a twist as a site override or a
    param.
-5. **Maybe**: the "Website by Shahar Best" footer credit (raw HTML in each
+2. **Maybe**: the "Website by Shahar Best" footer credit (raw HTML in each
    site's params) as a translated partial; accessibility-statement
    scaffolding from `menashe-forge/docs/accessibility/`.

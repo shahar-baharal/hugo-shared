@@ -25,6 +25,11 @@ that one file.
   screen below it. Each HugoBlox site's `baseof.html` calls
   `{{ partial "set-header-height" . }}` before `</body>`: a `hooks/body-end/`
   file in a module is never loaded (HugoBlox reads that folder from the site only).
+- **Theme toggle** (HugoBlox) — `layouts/_partials/components/theme-toggle.html`,
+  the navbar's dark/light button, centered on the header row and labelled in
+  each language (`theme_toggle` in `i18n/`). Each HugoBlox site's
+  `components/headers/navbar.html` override calls
+  `{{ partial "components/theme-toggle.html" . }}` in place of the vendor button.
 - `hugo.toml` — the minimum Hugo version (0.141, for `images.QR`).
 
 ## Using it in a site

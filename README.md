@@ -15,31 +15,13 @@ that one file.
     committed. Same arguments as Hugo's built-in `qr` shortcode, which it
     doesn't replace.
   - `i18n/{en,he,fr}.yaml` — its labels. A new language needs a page and labels.
-- **Footer menu icons** — a menu entry's `params.icon = "qr-code"` draws an
-  icon before its name. HugoBlox: `layouts/_partials/components/footers/minimal.html`
-  (vendor's file plus this, plus `root_absolute` entries such as the `/admin`
-  Edit link kept at the site root on `/he/`, `/fr/` pages). Congo draws
-  `params.icon` itself, from `assets/icons/qr-code.svg` here.
-- **Header height** (HugoBlox) — `layouts/_partials/set-header-height.html`
-  sets `--header-h` to the sticky header's height, so a hero can fill the
-  screen below it. Each HugoBlox site's `baseof.html` calls
-  `{{ partial "set-header-height" . }}` before `</body>`: a `hooks/body-end/`
-  file in a module is never loaded (HugoBlox reads that folder from the site only).
-- **Theme toggle** (HugoBlox) — `layouts/_partials/components/theme-toggle.html`,
-  the navbar's dark/light button, centered on the header row and labelled in
-  each language (`theme_toggle` in `i18n/`). Each HugoBlox site's
-  `components/headers/navbar.html` override calls
-  `{{ partial "components/theme-toggle.html" . }}` in place of the vendor button.
-- **HugoBlox fixes** — `layouts/_partials/site_footer.html`,
-  `functions/get_logo_url.html`, `functions/get_featured_image.html`,
-  `jsonld/business.html`, `components/language-chooser.html`: vendor files
-  with a fix, used as-is. Rationale for each:
-  `menashe-forge/docs/themes/hugoblox/OVERRIDES.md`. A site that needs a
-  variation keeps its own copy (atlas: `site_footer.html`).
+- **QR icon** — `assets/icons/qr-code.svg`, drawn before a footer menu
+  entry with `params.icon = "qr-code"` (by Congo, and by the HugoBlox fork's
+  footer).
 - **Cloudflare Web Analytics** — `layouts/_partials/cloudflare-web-analytics.html`
   adds the beacon on production builds when the site sets
-  `params.cloudflare_analytics_token`. Called before `</body>`: from each
-  HugoBlox site's `baseof.html` (like the header height), from shahar-best's
+  `params.cloudflare_analytics_token`. Called before `</body>`: on HugoBlox
+  sites from the fork's `hooks.body_end` list, from shahar-best's
   `extend-footer.html`.
 - **Sveltia CMS loader** — `static/admin/index.html`, one version pin for
   every site's `/admin/`. Each site keeps its own `static/admin/config.yml`.
@@ -49,12 +31,12 @@ that one file.
 
 ## Using it in a site
 
-1. Import it. HugoBlox sites list it **before** `blox`, so its overrides win:
+1. Import it. HugoBlox sites list it before the fork:
    ```toml
    [[imports]]
      path = 'github.com/shahar-baharal/hugo-shared'
    [[imports]]
-     path = 'github.com/HugoBlox/kit/modules/blox'
+     path = 'github.com/shahar-baharal/baharal-hugoblox/modules/blox'
    ```
 2. `hugo mod get github.com/shahar-baharal/hugo-shared@latest`; on HugoBlox
    sites also `hugo mod vendor` (they commit `_vendor/`). Commit `go.mod`,
@@ -84,20 +66,13 @@ HUGO_MODULE_WORKSPACE=go.work hugo server --ignoreVendorPaths '**'
 rm go.work go.work.sum   # never commit them
 ```
 
+## What doesn't belong here
+
+HugoBlox fixes and options go in the fork, `shahar-baharal/baharal-hugoblox`
+(its `MENASHE-FORGE.md`). This module holds only code that works with any theme.
+
 ## Candidates to move here next
 
-Found by comparing the sites' files (2026-11-02). Move an item when its real
-need arrives (usually the next HugoBlox upgrade), not ahead of it. A HugoBlox
-file that would break the Congo site (e.g. `baseof.html`) needs its own
-module first: a `hugoblox/` folder with its own `go.mod`, imported by the
-HugoBlox sites only.
-
-1. **Near-identical HugoBlox overrides**: `baseof.html`,
-   `components/headers/navbar.html`, `views/card.html`, hero `component.jsx`,
-   `hbx/blocks/contact-info/block.html`. Same skip-link, keyboard, RTL and
-   i18n fixes with per-site twists (eztechrepair's dark logo, mordecai's
-   `tel:` CTA): share the common file, keep a twist as a site override or a
-   param.
-2. **Maybe**: the "Website by Shahar Best" footer credit (raw HTML in each
-   site's params) as a translated partial; accessibility-statement
-   scaffolding from `menashe-forge/docs/accessibility/`.
+- **Maybe**: the "Website by Shahar Best" footer credit (raw HTML in each
+  site's params) as a translated partial; accessibility-statement
+  scaffolding from `menashe-forge/docs/accessibility/`.

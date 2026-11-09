@@ -75,8 +75,9 @@ records outbound clicks.
 **Turn it on for a site:**
 
 1. In [analytics.google.com](https://analytics.google.com), Baharal account:
-   Admin → Create → Property (the business's time zone and currency) → Web
-   stream for the domain, enhanced measurement on. Copy the stream's
+   Admin → Create → Property named after the business (in English), with its
+   time zone and currency, objectives *Generate leads* and *Understand web
+   traffic* → Web stream for the domain, enhanced measurement on. Copy the stream's
    Measurement ID (`G-…`, public).
 2. Load GA with the theme. HugoBlox: `[hugoblox.analytics.google]
    measurement_id = "G-…"` in `params.toml` (production builds only). Then add
@@ -89,7 +90,8 @@ records outbound clicks.
      *Create custom dimension*: name `Contact method`, scope Event, parameter
      `method`.
    - **Search Console**: Admin → Product links → Search Console links → Link
-     the domain property, so search queries show up in GA.
+     the domain property, so search queries show up in GA. Setting up the
+     property itself: `menashe-forge/docs/SEARCH-CONSOLE.md`.
 4. Check after deploying: click the phone link on the live site, then Reports
    → Realtime → "Event count by Event name" shows `contact_click`.
 

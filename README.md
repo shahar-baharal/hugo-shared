@@ -108,8 +108,7 @@ Each site's `docs/` says which property it uses and anything site-specific
 
 ## Changing shared code
 
-Edit here, push, then in each site: `hugo mod get -u github.com/shahar-baharal/hugo-shared`
-(+ `hugo mod vendor` on HugoBlox sites) and commit.
+Edit here, push, then `menashe-forge/workflows/scripts/bump.sh` (its README).
 
 To try a change before pushing, use a throwaway Go workspace in the site:
 ```sh

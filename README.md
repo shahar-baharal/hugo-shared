@@ -82,8 +82,9 @@ records outbound clicks.
    measurement_id = "G-…"` in `params.toml` (production builds only). Then add
    `"ga-contact-clicks"` to `hugoblox.hooks.body_end`.
 3. In GA, once per property:
-   - **Key event**: Admin → Data display → Key events → *New key event* →
-     `contact_click`. Clicks before this aren't counted retroactively.
+   - **Key event**: Admin → Data display → Events → *Create event* → name
+     `contact_click`, *Mark as key event* on, *Create with code* → Create.
+     Clicks before this aren't counted retroactively.
    - **Custom dimension**: Admin → Data display → Custom definitions →
      *Create custom dimension*: name `Contact method`, scope Event, parameter
      `method`.

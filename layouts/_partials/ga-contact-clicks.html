@@ -1,0 +1,32 @@
+{{/*
+  Lead tracking for Google Analytics 4: every click on a WhatsApp, tel: or
+  mailto: link (header CTA, contact block, any link added later) sends a
+  `contact_click` event with `method` = whatsapp | phone | email. Marked as a
+  key event in GA admin, it is the site's lead count. Setup: README →
+  "Google Analytics lead tracking".
+
+  Theme-agnostic: it only needs the theme's GA snippet to define gtag(); with
+  no GA on the page it does nothing. Production builds only, like the beacon.
+  Called before </body>: on HugoBlox sites from the fork's hooks.body_end list.
+*/}}
+{{ if hugo.IsProduction }}
+<script>
+(function () {
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a || typeof gtag !== 'function') return;
+    var href = a.getAttribute('href');
+    var method =
+      /^https?:\/\/(wa\.me|api\.whatsapp\.com)\//.test(href) ? 'whatsapp' :
+      /^tel:/.test(href) ? 'phone' :
+      /^mailto:/.test(href) ? 'email' : null;
+    if (!method) return;
+    gtag('event', 'contact_click', {
+      method: method,
+      link_url: href,
+      transport_type: 'beacon'
+    });
+  });
+})();
+</script>
+{{ end }}

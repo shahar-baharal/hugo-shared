@@ -23,6 +23,9 @@ that one file.
   `params.cloudflare_analytics_token`. Called before `</body>`: on HugoBlox
   sites from the fork's `hooks.body_end` list, from shahar-best's
   `extend-footer.html`.
+- **Google Analytics lead tracking** — `layouts/_partials/ga-contact-clicks.html`
+  sends a GA4 `contact_click` event on WhatsApp, `tel:` and `mailto:` clicks.
+  Setup: "Google Analytics lead tracking" below.
 - **Sveltia CMS loader** — `static/admin/index.html`, one version pin for
   every site's `/admin/`. Each site keeps its own `static/admin/config.yml`.
   A site without a CMS lists hugo-shared's mounts without `static` (baharal's
@@ -53,6 +56,51 @@ that one file.
    ```
 
 Check with `hugo config mounts | grep '"path"'`: hugo-shared comes before `blox`.
+
+## Google Analytics lead tracking
+
+What a site owner needs to know is whether the site brings work, so the lead is
+a visitor who reaches out. Cloudflare Web Analytics counts visits but can't
+count clicks; GA4 can. Every click on a WhatsApp, `tel:` or `mailto:` link
+sends:
+
+| Event | Parameter | Values |
+|---|---|---|
+| `contact_click` | `method` | `whatsapp`, `phone`, `email` |
+
+A click counts intent, not a call or message actually made, and ad blockers
+hide some visitors. Map links need nothing: GA4's enhanced measurement already
+records outbound clicks.
+
+**Turn it on for a site:**
+
+1. In [analytics.google.com](https://analytics.google.com), Baharal account:
+   Admin → Create → Property (the business's time zone and currency) → Web
+   stream for the domain, enhanced measurement on. Copy the stream's
+   Measurement ID (`G-…`, public).
+2. Load GA with the theme. HugoBlox: `[hugoblox.analytics.google]
+   measurement_id = "G-…"` in `params.toml` (production builds only). Then add
+   `"ga-contact-clicks"` to `hugoblox.hooks.body_end`.
+3. In GA, once per property:
+   - **Key event**: Admin → Data display → Events → *Create event* → name
+     `contact_click`, *Mark as key event* on, *Create with code* → Create.
+     Clicks before this aren't counted retroactively.
+   - **Custom dimension**: Admin → Data display → Custom definitions →
+     *Create custom dimension*: name `Contact method`, scope Event, parameter
+     `method`.
+   - **Search Console**: Admin → Product links → Search Console links → Link
+     the domain property, so search queries show up in GA.
+4. Check after deploying: click the phone link on the live site, then Reports
+   → Realtime → "Event count by Event name" shows `contact_click`.
+
+**Reading the numbers**: Reports → Engagement → Key events. Where leads come
+from: Explore → Free form, rows *First user primary channel group*, columns
+*Contact method*, values *Key events*, filter *Event name* = `contact_click`.
+Visits from data-centre towns (Ashburn, Boardman, The Dalles) are bots. Your
+own test clicks count too, so keep them few.
+
+Each site's `docs/` says which property it uses and anything site-specific
+(e.g. which contact channel the owner prefers).
 
 ## Changing shared code
 

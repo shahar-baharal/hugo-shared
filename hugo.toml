@@ -1,2 +1,15 @@
 [module.hugoVersion]
   min = '0.141.0'   # images.QR
+
+# Image processing for every site. A site takes it with `[imaging] _merge = 'deep'`
+# (Hugo merges no imaging from modules by default); its own keys still win.
+[imaging]
+  resampleFilter = 'lanczos'
+  anchor = 'smart'
+  [imaging.jpeg]
+    quality = 82
+  [imaging.webp]
+    quality = 82
+    hint = 'picture'
+  [imaging.avif]
+    quality = 82

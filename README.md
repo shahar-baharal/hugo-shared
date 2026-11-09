@@ -30,7 +30,9 @@ that one file.
   every site's `/admin/`. Each site keeps its own `static/admin/config.yml`.
   A site without a CMS lists hugo-shared's mounts without `static` (baharal's
   `hugo.toml`).
-- `hugo.toml` — the minimum Hugo version (0.141, for `images.QR`).
+- `hugo.toml` — the minimum Hugo version (0.141, for `images.QR`), and the
+  image-processing settings (quality 82, Lanczos, smart crop). A site takes them
+  with `[imaging] _merge = 'deep'` in its own config.
 
 ## Using it in a site
 

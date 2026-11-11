@@ -1,0 +1,25 @@
+{{/*
+  One step's screenshot, matching the reader's screen: the phone shot on
+  narrow screens, the desktop shot from 768px up (<picture>, so only one
+  downloads). Files: assets/guides/<src>.<lang>.{phone,desktop}.webp, where
+  <lang> is the page's language ("he", "en"); `lang` overrides it.
+  Inline styles: themes ship different CSS (see site-qr.html).
+
+  {{< guide-shot src="gbp/02-name" alt="The business name box" >}}
+*/}}
+{{- $src := .Get "src" -}}
+{{- $lang := or (.Get "lang") .Page.Language.Lang -}}
+{{- $phone := resources.Get (printf "guides/%s.%s.phone.webp" $src $lang) -}}
+{{- $desk := resources.Get (printf "guides/%s.%s.desktop.webp" $src $lang) -}}
+{{- if not (and $phone $desk) -}}
+  {{- errorf "guide-shot: missing guides/%s.%s.{phone,desktop}.webp (%s)" $src $lang .Position -}}
+{{- end -}}
+<picture>
+  <source media="(min-width: 768px)" srcset="{{ $desk.RelPermalink }}" width="{{ $desk.Width }}" height="{{ $desk.Height }}">
+  <img src="{{ $phone.RelPermalink }}" width="{{ $phone.Width }}" height="{{ $phone.Height }}"
+       class="guide-shot" alt="{{ .Get "alt" }}" loading="lazy" decoding="async"
+       style="display: block; margin: 1rem auto; height: auto; border: 1px solid #d1d5db; border-radius: 0.75rem">
+</picture>
+{{- if not (.Page.Store.Get "guide-shot-css") }}{{ .Page.Store.Set "guide-shot-css" true }}
+<style>.guide-shot { max-width: min(100%, 22rem); } @media (min-width: 768px) { .guide-shot { max-width: 100%; } }</style>
+{{- end }}

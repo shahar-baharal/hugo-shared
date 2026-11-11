@@ -1,0 +1,9 @@
+{{/*
+  The English name of a button, in parentheses, for readers whose screen is in
+  English. Isolated (<bdi>) so right-to-left text doesn't scramble it, and kept
+  on one line.
+
+  {{< ui-en "Next" >}}  →  (Next)
+*/}}
+<bdi style="white-space: nowrap">({{ .Get 0 }})</bdi>
+{{- /* no trailing newline */ -}}

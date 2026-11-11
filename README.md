@@ -30,6 +30,18 @@ that one file.
   every site's `/admin/`. Each site keeps its own `static/admin/config.yml`.
   A site without a CMS lists hugo-shared's mounts without `static` (baharal's
   `hugo.toml`).
+- **Client guides** — step-by-step pages for non-technical owners (the first:
+  creating a Google Business Profile; baharal.com/guides/ and a personal copy
+  on a client's site).
+  - `assets/guides/<guide>/<step>.<lang>.{phone,desktop}.webp` — the
+    screenshots, one set for every site. Assets publish only when a page uses
+    them. How they were taken, and re-taking them: `tools/guide-shots/README.md`.
+  - `layouts/_shortcodes/guide-shot.html` — `{{< guide-shot src="gbp/02-name"
+    alt="…" >}}`: the phone shot on narrow screens, the desktop one from 768px.
+  - `layouts/_shortcodes/ui-en.html` — `{{< ui-en "Next" >}}`: a button's
+    English name in parentheses, safe inside right-to-left text.
+  - `layouts/_shortcodes/copy-value.html` — `{{< copy-value "text" >}}`: a
+    value to type somewhere, with a copy button (labels in `i18n/`).
 - `hugo.toml` — the minimum Hugo version (0.141, for `images.QR`), and the
   image-processing settings (quality 82, Lanczos, smart crop). A site takes them
   with `[imaging] _merge = 'deep'` in its own config.

@@ -1,0 +1,4 @@
+#!/bin/bash
+# usage: c <cmd> key=value ...
+cmd=$1; shift; args=(); for a in "$@"; do args+=(--data-urlencode "$a"); done
+curl -sG "http://127.0.0.1:9333/$cmd" "${args[@]}"

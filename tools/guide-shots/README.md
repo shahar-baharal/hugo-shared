@@ -3,6 +3,8 @@
 Takes the screenshots for the client guides (`../../assets/guides/`): the same
 screen as a phone and as a computer, in Hebrew and English, from a real
 signed-in Google account. Not part of the Hugo module (nothing mounts `tools/`).
+Read the playbook first (`menashe-forge/docs/CLIENT-GUIDES.md`): editing an
+image is far cheaper than re-taking it.
 
 1. Chromium with its own profile, remote debugging on localhost:
    `chromium --user-data-dir=$HOME/.cache/guide-shots --remote-debugging-port=9222`
@@ -24,8 +26,9 @@ signed-in Google account. Not part of the Hugo module (nothing mounts `tools/`).
    ./c shot v=he-phone name=08-contact        # → <out>/08-contact.he.phone.png
    ```
    `__mark` rings the button the reader should press; `__unmark` clears it.
-4. Convert: `magick in.png -resize 1366x -quality 82 out.webp` (desktop;
-   phone: `-resize 780x`), named `<step>.<lang>.<device>.webp`, into `assets/guides/<guide>/`.
+4. Convert, quality 82 — desktop: `magick in.png -trim +repage -bordercolor white
+   -border 32 -resize '1366x>' -quality 82 out.webp`; phone: `-resize 624x`, blank
+   bottom trimmed only (keep the full width). Named `<step>.<lang>.<device>.webp`, into `assets/guides/<guide>/`.
 
 `wizard.sh <variant>` walks Google's create-profile wizard and stops on the
 contact screen, whose Next **creates a profile** (a duplicate, if one exists).

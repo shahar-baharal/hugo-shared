@@ -32,7 +32,8 @@ that one file.
   `hugo.toml`).
 - **Client guides** — step-by-step pages for non-technical owners (the first:
   creating a Google Business Profile; baharal.com/guides/ and a personal copy
-  on a client's site).
+  on a client's site). Making or changing one: the playbook
+  `menashe-forge/docs/CLIENT-GUIDES.md`.
   - `assets/guides/<guide>/<step>.<lang>.{phone,desktop}.webp` — the
     screenshots, one set for every site. Assets publish only when a page uses
     them. How they were taken, and re-taking them: `tools/guide-shots/README.md`.

@@ -1,0 +1,22 @@
+{
+  "title": "פנייה חדשה מהאתר - בקשה להצעת מחיר לטיסה",
+  "lang": "he-IL",
+  "dir": "rtl",
+  "accent": "#012d5e",
+  "countryCode": "972",
+  "fields": [
+    { "label": "שם מלא", "type": "text", "value": "רחל לוי", "width": "half" },
+    { "label": "טלפון", "type": "tel", "value": "050-0000000", "width": "half" },
+    { "label": "אימייל", "type": "email", "value": "rachel.levi@example.com", "width": "full" },
+    { "label": "מוצא", "type": "text", "value": "תל אביב (נתב״ג)", "width": "half" },
+    { "label": "יעד", "type": "text", "value": "רומא", "width": "half" },
+    { "label": "סוג טיסה", "type": "select-one", "value": "הלוך ושוב", "width": "half" },
+    { "label": "גמישות בתאריכים", "type": "select-one", "value": "פלוס-מינוס כמה ימים", "width": "half" },
+    { "label": "תאריך יציאה", "type": "date", "value": "2027-02-10", "width": "half" },
+    { "label": "תאריך חזרה", "type": "date", "value": "2027-02-15", "width": "half" },
+    { "label": "מבוגרים", "type": "number", "value": "2", "width": "third" },
+    { "label": "ילדים (2-11)", "type": "number", "value": "0", "width": "third" },
+    { "label": "תינוקות (עד 2)", "type": "number", "value": "0", "width": "third" },
+    { "label": "הערות", "type": "textarea", "value": "מעדיפים טיסת בוקר.\nמזוודה לכל אחד.", "width": "full" }
+  ]
+}

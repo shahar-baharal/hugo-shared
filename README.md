@@ -128,7 +128,7 @@ A visitor fills in a form on the site; the owner gets one email, laid out in
 the page's language and direction. No third-party form service: the site's own
 Worker sends it through Cloudflare Email Routing, which is free when the
 recipient is a verified address. Live on flynoam.com since 2026-11-16 (why:
-`sites/mordecai/docs/decisions.md`).
+`sites/flynoam/docs/decisions.md`).
 
 ### Pieces (each does one thing)
 

@@ -48,7 +48,8 @@ async function handle(request, env) {
   const { html, text } = render({
     title,
     lang: /^[a-zA-Z-]{2,20}$/.test(body.lang) ? body.lang : 'en',
-    dir: body.dir === 'rtl' ? 'rtl' : 'ltr',
+    // dir from the form; a form that doesn't send it gets rtl from Hebrew/Arabic labels
+    dir: ['rtl', 'ltr'].includes(body.dir) ? body.dir : /[\u0590-\u08FF]/.test(fields.map((f) => f.label).join('')) ? 'rtl' : 'ltr',
     accent: /^#[0-9a-fA-F]{3,8}$/.test(env.INQUIRY_ACCENT) ? env.INQUIRY_ACCENT : undefined,
     countryCode: /^\d{1,4}$/.test(env.INQUIRY_COUNTRY_CODE) ? env.INQUIRY_COUNTRY_CODE : '',
     fields,

@@ -150,6 +150,7 @@ recipient is a verified address. Live on flynoam.com since 2026-11-16 (why:
   "fields": [{ "label": "Name", "type": "text", "value": "…", "width": "half" }] }
 ```
 
+- `dir` optional: without it, Hebrew or Arabic labels mean `rtl`.
 - `fields` in form order; empty values are dropped. The first field's value
   (the visitor's name) is appended to the subject.
 - `type`: the input's type. `tel` gets a call link, plus a WhatsApp link if the

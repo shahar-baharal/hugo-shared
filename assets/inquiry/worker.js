@@ -3,6 +3,7 @@
 // request contract: hugo-shared README, "Inquiry form".
 //
 // POST /api/inquiry  {subject, lang, dir, botcheck, fields: [{label, type, value, width}]}
+//   -> {success: true, ref}: ref is a short reference number, also in the email subject
 // Sends one email to env.INQUIRY_TO through the EMAIL send_email binding
 // (Cloudflare Email Routing: free to a verified destination address).
 
@@ -31,7 +32,8 @@ async function handle(request, env) {
   } catch {
     return json({ success: false, error: 'bad json' }, 400);
   }
-  if (body.botcheck) return json({ success: true }); // honeypot: tell the bot it worked
+  const ref = reference();
+  if (body.botcheck) return json({ success: true, ref }); // honeypot: tell the bot it worked
 
   const fields = (Array.isArray(body.fields) ? body.fields : [])
     .slice(0, MAX_FIELDS)
@@ -60,7 +62,7 @@ async function handle(request, env) {
     await env.EMAIL.send({
       to: env.INQUIRY_TO,
       from: { email: env.INQUIRY_FROM, name: env.INQUIRY_FROM_NAME || title },
-      subject: `${title} - ${fields[0].value}`, // the first field: the visitor's name
+      subject: `${title} - ${fields[0].value} #${ref}`, // the first field: the visitor's name
       replyTo,
       html,
       text,
@@ -69,9 +71,11 @@ async function handle(request, env) {
     console.error('inquiry send failed', e.code, e.message);
     return json({ success: false, code: e.code, error: e.message }, 502);
   }
-  return json({ success: true });
+  return json({ success: true, ref });
 }
 
+// Six digits: easy to read out on the phone; not unique, only a handle for one conversation.
+const reference = () => String(crypto.getRandomValues(new Uint32Array(1))[0] % 900000 + 100000);
 const str = (v) => (typeof v === 'string' || typeof v === 'number' ? String(v).slice(0, MAX_LEN) : '');
 const json = (data, status = 200) =>
   new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });

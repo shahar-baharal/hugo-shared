@@ -158,7 +158,9 @@ recipient is a verified address. Live on flynoam.com since 2026-11-16 (why:
   mailto link and becomes the reply-to; `date` (`yyyy-mm-dd`) is shown in
   `lang`'s format.
 - `width`: `full` | `half` | `third`, the same width the field has in the form.
-- Responses: `{"success":true}`, or `{"success":false,"error":…}` with 4xx/5xx.
+- Responses: `{"success":true,"ref":"482913"}` (`ref`: a six-digit
+  reference, also at the end of the email subject, for the form to show the
+  visitor), or `{"success":false,"error":…}` with 4xx/5xx.
   A missing var is a 500 naming it.
 
 ### The email layout

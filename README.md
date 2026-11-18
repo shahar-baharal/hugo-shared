@@ -219,7 +219,7 @@ owner. Each part is optional; remove it and that part is off.
 
 | Part | Where | Does | Turn off |
 |---|---|---|---|
-| Copy | the site's `wrangler.jsonc` var `INQUIRY_COPY_TO` | Every inquiry is also sent to this address, even when the owner's send fails | Delete the var (also turns tests off) |
+| Copy | the site's `wrangler.jsonc` var `INQUIRY_COPY_TO` | Every inquiry is also sent to this address, even when the owner's send fails | Delete the var. Tests then reach the owner, so delete the daily check too |
 | Tests | `worker.js` `isTest` | A submission from a preview URL (`*.workers.dev`) or with the name `TEST` goes **only** to the copy address, subject `[TEST] …`. Only while the copy is on | With the copy |
 | Daily check | the site's `.github/workflows/inquiry-check.yml`, calling `shahar-baharal/workflows` `inquiry-check.yml` | Each morning posts a `TEST` inquiry; a failure fails the run and GitHub emails Shahar. Run it now: `gh workflow run inquiry-check.yml -R shahar-baharal/<site>` | Delete the file, or `gh workflow disable inquiry-check.yml -R …` |
 

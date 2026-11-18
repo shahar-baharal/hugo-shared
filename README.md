@@ -239,6 +239,14 @@ that Gmail puts in Spam or a muted tab.
 The check proves the Worker sent the email, not that it reached an inbox; a
 missing `[TEST]` in the `Inquiries` label is the sign of that.
 
+When the check fails: the run's log prints the Worker's JSON
+(`gh run view --log-failed -R shahar-baharal/<site>`). A `code`/`error`
+from Cloudflare usually means a destination isn't verified
+(`npx wrangler email routing addresses list`: the copy address needs a
+`verified` date) or the site's `wrangler.jsonc` vars changed; anything else
+(timeout, HTML instead of JSON): the site or its Worker is down, see the
+latest Deploy run. Then fix, and rerun with `gh workflow run`.
+
 ### Gotchas
 
 - **Only a default export** in `worker.js`: Workers treats named exports as

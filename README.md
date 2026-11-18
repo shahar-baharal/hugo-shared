@@ -227,12 +227,14 @@ House value for the copy: `shaharbestbaharal+inquiries@gmail.com`, one
 Cloudflare destination for every site (`setup.sh <domain>
 shaharbestbaharal+inquiries@gmail.com` once, then click the link). In that
 Gmail, one filter, `to:(shaharbestbaharal+inquiries@gmail.com)` → skip the
-inbox, label `Inquiries`, never spam, keeps copies and tests out of the inbox;
+inbox, label `Inquiries`, never spam, never important (so Priority Inbox
+doesn't pull them back), keeps copies and tests out of the inbox;
 the label is the log of every lead and every daily check.
 
 In the owner's Gmail, before handing it over: a filter
-`from:(inquiry@<domain>)` → never spam, always important. No test sees a
-lead that Gmail puts in Spam.
+`from:(inquiry@<domain>)` → never spam, always important, category Primary
+(the phone app notifies for Primary only by default). No test sees a lead
+that Gmail puts in Spam or a muted tab.
 
 The check proves the Worker sent the email, not that it reached an inbox; a
 missing `[TEST]` in the `Inquiries` label is the sign of that.

@@ -6,6 +6,8 @@
 //   -> {success: true, ref}: ref is a short reference number, also in the email subject
 // Sends one email to env.INQUIRY_TO through the EMAIL send_email binding
 // (Cloudflare Email Routing: free to a verified destination address).
+// Optional env.INQUIRY_COPY_TO gets a copy of each inquiry, and is the only
+// recipient of tests (see isTest); README, "Copy, tests and the daily check".
 
 import { render } from './email.js';
 
@@ -58,21 +60,43 @@ async function handle(request, env) {
   });
   const replyTo = fields.find((f) => f.type === 'email' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.value))?.value;
 
-  try {
-    await env.EMAIL.send({
-      to: env.INQUIRY_TO,
-      from: { email: env.INQUIRY_FROM, name: env.INQUIRY_FROM_NAME || title },
-      subject: `${title} - ${fields[0].value} #${ref}`, // the first field: the visitor's name
-      replyTo,
-      html,
-      text,
-    });
-  } catch (e) {
-    console.error('inquiry send failed', e.code, e.message);
-    return json({ success: false, code: e.code, error: e.message }, 502);
+  const copyTo = env.INQUIRY_COPY_TO;
+  const test = Boolean(copyTo) && isTest(request, fields);
+  const message = {
+    from: { email: env.INQUIRY_FROM, name: env.INQUIRY_FROM_NAME || title },
+    subject: `${test ? '[TEST] ' : ''}${title} - ${fields[0].value} #${ref}`, // the first field: the visitor's name
+    replyTo,
+    html,
+    text,
+  };
+
+  // The owner's send decides the response; the copy goes out even if it failed,
+  // so a lead the owner never got still reaches the copy inbox.
+  let failed;
+  if (!test) {
+    try {
+      await env.EMAIL.send({ ...message, to: env.INQUIRY_TO });
+    } catch (e) {
+      console.error('inquiry send failed', e.code, e.message);
+      failed = e;
+    }
   }
+  if (copyTo) {
+    try {
+      await env.EMAIL.send({ ...message, to: copyTo });
+    } catch (e) {
+      console.error('inquiry copy failed', e.code, e.message);
+      if (test) failed = e; // a test has no other recipient: its failure is the result
+    }
+  }
+  if (failed) return json({ success: false, code: failed.code, error: failed.message }, 502);
   return json({ success: true, ref });
 }
+
+// A test reaches only INQUIRY_COPY_TO: a submission from a preview URL
+// (*.workers.dev), or one whose first field (the name) is TEST.
+const isTest = (request, fields) =>
+  new URL(request.url).hostname.endsWith('.workers.dev') || fields[0].value.toUpperCase() === 'TEST';
 
 // Six digits: easy to read out on the phone; not unique, only a handle for one conversation.
 const reference = () => String(crypto.getRandomValues(new Uint32Array(1))[0] % 900000 + 100000);

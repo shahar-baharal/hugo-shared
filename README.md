@@ -135,10 +135,10 @@ recipient is a verified address. Live on flynoam.com since 2026-11-16 (why:
 | Piece | Where | Does |
 |---|---|---|
 | Form | HugoBlox: the fork's `inquiry-form` block (`baharal-hugoblox/modules/blox/blox/inquiry-form/README.md`). Other themes: any form that sends the request below | Renders the fields from the block's `content`, posts JSON |
-| Worker | `assets/inquiry/worker.js` | `POST /api/inquiry`: same-origin and honeypot checks, then one email via the `EMAIL` binding |
+| Worker | `assets/inquiry/worker.js` | `POST /api/inquiry`: same-origin and honeypot checks, then one email via the `EMAIL` binding (plus an optional copy, below) |
 | Template | `assets/inquiry/email.js` | `render(fields) → {html, text}`: pure function, no Worker APIs |
 | Preview | `tools/inquiry/preview.js` | `node preview.js < sample.json > out.html` (or `--text`) |
-| Tests | `tools/inquiry/email.test.js` | `cd tools/inquiry && node --test` |
+| Tests | `tools/inquiry/*.test.js` | `cd tools/inquiry && node --test` (layout; who gets each email) |
 | Setup | `tools/inquiry/setup.sh <domain> <to>` | Email Routing on, owner's inbox added as destination; safe to re-run |
 
 ### The request (form → Worker)
@@ -196,7 +196,8 @@ the sites (below).
      "INQUIRY_FROM": "inquiry@<domain>",        // required, on the domain of step 1
      "INQUIRY_FROM_NAME": "Business name",      // optional, default: the subject
      "INQUIRY_ACCENT": "#012d5e",               // optional, heading and link color
-     "INQUIRY_COUNTRY_CODE": "972"              // optional, local numbers → WhatsApp links
+     "INQUIRY_COUNTRY_CODE": "972",             // optional, local numbers → WhatsApp links
+     "INQUIRY_COPY_TO": "…"                     // optional, below
    }
    ```
 3. **The form**: on a HugoBlox page, `- block: inquiry-form` with its
@@ -204,11 +205,37 @@ the sites (below).
    above.
 4. **Check**: `hugo --environment production`, push, then submit the live form
    with a dummy phone and an `@example.com` email; it lands in the owner's
-   inbox. Record the setup in the site's `docs/`.
+   inbox (with the copy on: name it `TEST` and it lands only in the copy).
+   Add the daily check (below). Record the setup in the site's `docs/`.
 
 Free on any Workers plan: sends to verified destinations don't count against
 Email Sending's quota. Sending to arbitrary recipients (e.g. a copy to the
 visitor) would need Workers Paid and Email Sending on the domain.
+
+### Copy, tests and the daily check
+
+So a broken form can't lose leads unnoticed, and testing never spams the
+owner. Each part is optional; remove it and that part is off.
+
+| Part | Where | Does | Turn off |
+|---|---|---|---|
+| Copy | the site's `wrangler.jsonc` var `INQUIRY_COPY_TO` | Every inquiry is also sent to this address, even when the owner's send fails | Delete the var (also turns tests off) |
+| Tests | `worker.js` `isTest` | A submission from a preview URL (`*.workers.dev`) or with the name `TEST` goes **only** to the copy address, subject `[TEST] …`. Only while the copy is on | With the copy |
+| Daily check | the site's `.github/workflows/inquiry-check.yml`, calling `shahar-baharal/workflows` `inquiry-check.yml` | Each morning posts a `TEST` inquiry; a failure fails the run and GitHub emails Shahar. Run it now: `gh workflow run inquiry-check.yml -R shahar-baharal/<site>` | Delete the file, or `gh workflow disable inquiry-check.yml -R …` |
+
+House value for the copy: `shaharbestbaharal+inquiries@gmail.com`, one
+Cloudflare destination for every site (`setup.sh <domain>
+shaharbestbaharal+inquiries@gmail.com` once, then click the link). In that
+Gmail, one filter, `to:(shaharbestbaharal+inquiries@gmail.com)` → skip the
+inbox, label `Inquiries`, never spam, keeps copies and tests out of the inbox;
+the label is the log of every lead and every daily check.
+
+In the owner's Gmail, before handing it over: a filter
+`from:(inquiry@<domain>)` → never spam, always important. No test sees a
+lead that Gmail puts in Spam.
+
+The check proves the Worker sent the email, not that it reached an inbox; a
+missing `[TEST]` in the `Inquiries` label is the sign of that.
 
 ### Gotchas
 
